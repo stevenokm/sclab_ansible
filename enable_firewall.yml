@@ -1,0 +1,21 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: enable ufw firewall
+      ufw:
+        state: enabled
+
+    - name: Set logging
+      ufw:
+        logging: on
+
+    - name: add NTHU only rule
+      ufw:
+        rule: allow
+        src: '{{ item }}'
+      with_items:
+        - 140.114.0.0/16

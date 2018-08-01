@@ -1,0 +1,6 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  tasks:
+    - name: test connection
+      ping:

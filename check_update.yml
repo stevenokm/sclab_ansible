@@ -1,0 +1,20 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: update apt db
+      apt:
+        update_cache: "yes"
+    
+    - name: check upgrade list
+      shell: /usr/bin/apt-get upgrade --simulate
+      register: pkglist
+
+    - debug: 
+        msg: "{{ pkglist.stdout_lines }}"
+        
+
+
