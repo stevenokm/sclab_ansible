@@ -1,0 +1,13 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: install unattended-upgrades
+      apt:
+        pkg: unattended-upgrades
+        state: present
+        update_cache: yes
+

@@ -1,0 +1,14 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: schedule shutdown
+      shell: /sbin/shutdown -h 05:00 &
+      register: print_msg
+
+    - debug: 
+        msg: "{{ print_msg.stdout_lines }}"
+

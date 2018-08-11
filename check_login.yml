@@ -1,0 +1,10 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  tasks:
+    - name: list logins
+      shell: /usr/bin/who -a
+      register: user_list
+
+    - debug:
+        msg: "{{ user_list.stdout_lines }}"
