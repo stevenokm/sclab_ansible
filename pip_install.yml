@@ -1,0 +1,15 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: install latest glances in python3
+      pip:
+        name: glances
+        executable: pip3
+    - name: install latest nvidia-ml-py3 in python3
+      pip:
+        name: nvidia-ml-py3
+        executable: pip3

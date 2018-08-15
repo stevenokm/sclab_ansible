@@ -1,0 +1,10 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  tasks:
+    - name: list nvidia GPU
+      shell: /usr/bin/nvidia-smi
+      register: gpu_list
+
+    - debug:
+        msg: "{{ gpu_list.stdout_lines }}"

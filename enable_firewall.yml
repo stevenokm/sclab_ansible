@@ -11,7 +11,7 @@
 
     - name: Set logging
       ufw:
-        logging: on
+        logging: 'on'
 
     - name: add NTHU only rule
       ufw:
