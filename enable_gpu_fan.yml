@@ -1,0 +1,24 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: initial xorg config file with nvidia-xconfig
+      shell: /usr/bin/nvidia-xconfig
+
+    - name: enable xorg config all gpus
+      shell: /usr/bin/nvidia-xconfig --enable-all-gpus
+
+    - name: enable gpu fan control
+      shell: /usr/bin/nvidia-xconfig --cool-bits=4
+
+    - name: enable xserver start at no monitor connected
+      shell: /usr/bin/nvidia-xconfig --allow-empty-initial-configuration
+
+    - name: restart xserver
+      service:
+        name: lightdm
+        state: restarted
+

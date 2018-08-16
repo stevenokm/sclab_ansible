@@ -9,10 +9,10 @@
 #   - A hostname/ip can be a member of multiple groups
 
 [sclab]
-140.114.75.64
-140.114.75.148
-140.114.75.235
-140.114.75.239
+140.114.75.64 gpus=2
+140.114.75.148 gpus=4
+140.114.75.235 gpus=2
+140.114.75.239 gpus=2
 
 # Ex 1: Ungrouped hosts, specify before any group headers.
 

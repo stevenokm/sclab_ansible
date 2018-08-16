@@ -1,0 +1,17 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars:
+    fan_speed: 100
+  tasks:
+    - name: enable fan control
+      shell: "DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 nvidia-settings -a [gpu:{{ item }}]/GPUFanControlState=1"
+      with_sequence: start=0 end={{ hostvars[inventory_hostname].gpus - 1 }}
+
+    - name: set fan speed
+      shell: "DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 nvidia-settings -a [fan:{{ item }}]/GPUTargetFanSpeed={{ fan_speed }}"
+      with_sequence: start=0 end={{ hostvars[inventory_hostname].gpus - 1 }}
+
