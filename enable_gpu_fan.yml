@@ -5,6 +5,14 @@
   become_user: root
   become_method: sudo
   tasks:
+    - name: reminder
+      msg: "remember to disable iGPU running X11"
+
+    - name: stop xserver
+      service:
+        name: lightdm
+        state: stopped
+
     - name: initial xorg config file with nvidia-xconfig
       shell: /usr/bin/nvidia-xconfig
 
@@ -20,5 +28,5 @@
     - name: restart xserver
       service:
         name: lightdm
-        state: restarted
+        state: started
 
