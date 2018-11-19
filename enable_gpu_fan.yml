@@ -6,7 +6,8 @@
   become_method: sudo
   tasks:
     - name: reminder
-      msg: "remember to disable iGPU running X11"
+      debug:
+        msg: "remember to disable iGPU running X11"
 
     - name: stop xserver
       service:

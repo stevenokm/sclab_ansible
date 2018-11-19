@@ -1,0 +1,30 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: download CUDA repo
+      get_url:
+      args:
+        url: http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_9.0.176-1_amd64.deb
+        dest: /tmp/cuda-repo-ubuntu1604_9.0.176-1_amd64.deb
+        checksum: "md5:4b8004dd747dbb664e85b17dec3fee51"
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: install CUDA repo
+      apt:
+      args:
+        deb: /tmp/cuda-repo-ubuntu1604_9.0.176-1_amd64.deb
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: setup CUDA repo
+      apt_key:
+        url: http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: update apt
+      apt: update_cache=yes
+    #TODO install cuda
+    #TODO install cudnn

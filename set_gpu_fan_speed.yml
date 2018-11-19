@@ -7,11 +7,15 @@
   vars:
     fan_speed: 100
   tasks:
-    - name: enable fan control
-      shell: "DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 nvidia-settings -a [gpu:{{ item }}]/GPUFanControlState=1"
-      with_sequence: start=0 end={{ hostvars[inventory_hostname].gpus - 1 }}
+    - name: create setting script
+      copy:
+        dest: "/usr/share/lightdm/lightdm.conf.d/99-nvfanspeed.conf"
+        content: |
+          [SeatDefaults]
+          display-setup-script=/usr/bin/nvidia-settings {% for id in range(hostvars[inventory_hostname].gpus) %} -a [gpu:{{ id }}]/GPUFanControlState=1 -a [fan:{{ id }}]/GPUTargetFanSpeed={{ fan_speed }} {% endfor %}
 
-    - name: set fan speed
-      shell: "DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 nvidia-settings -a [fan:{{ item }}]/GPUTargetFanSpeed={{ fan_speed }}"
-      with_sequence: start=0 end={{ hostvars[inventory_hostname].gpus - 1 }}
+    - name: restart xserver
+      service:
+        name: lightdm
+        state: restarted
 
