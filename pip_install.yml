@@ -18,3 +18,7 @@
       pip:
         name: nvidia-ml-py3
         executable: pip3
+    - name: install 2.0.2 matplotlib in python3
+      pip:
+        name: matplotlib==2.0.2
+        executable: pip3
