@@ -26,4 +26,7 @@
     - name: install latest kaggle in python3
       pip:
         name: kaggle
+    - name: install 2.0.2 matplotlib in python3
+      pip:
+        name: matplotlib==2.0.2
         executable: pip3
