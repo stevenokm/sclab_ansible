@@ -5,6 +5,11 @@
   become_user: root
   become_method: sudo
   tasks:
+    - name: install python3
+      apt:
+        pkg: python3
+        state: present
+        update_cache: yes
     - name: install python3-pip
       apt:
         pkg: python3-pip
@@ -17,4 +22,8 @@
     - name: install latest nvidia-ml-py3 in python3
       pip:
         name: nvidia-ml-py3
+        executable: pip3
+    - name: install latest kaggle in python3
+      pip:
+        name: kaggle
         executable: pip3

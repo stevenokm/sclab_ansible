@@ -8,15 +8,15 @@
     - name: download CUDA repo
       get_url:
       args:
-        url: http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_9.0.176-1_amd64.deb
-        dest: /tmp/cuda-repo-ubuntu1604_9.0.176-1_amd64.deb
-        checksum: "md5:4b8004dd747dbb664e85b17dec3fee51"
+        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_10.0.130-1_amd64.deb
+        dest: /tmp/cuda-repo-ubuntu1604_10.0.130-1_amd64.deb
+        checksum: "md5:13ca2678965c6a013aab82d5628365de"
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install CUDA repo
       apt:
       args:
-        deb: /tmp/cuda-repo-ubuntu1604_9.0.176-1_amd64.deb
+        deb: /tmp/cuda-repo-ubuntu1604_10.0.130-1_amd64.deb
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: setup CUDA repo
@@ -26,5 +26,30 @@
 
     - name: update apt
       apt: update_cache=yes
-    #TODO install cuda
+
+    - name: install CUDA 10.0
+      apt:
+        pkg: cuda-10-0
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: install CUDA 8.0
+      apt:
+        pkg: cuda-8-0
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: install CUDA 9.0
+      apt:
+        pkg: cuda-9-0
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: set default cuda device setting script
+      copy:
+        dest: "/etc/profile.d/cuda-default.sh"
+        content: |
+          export CUDA_VISIBLE_DEVICES="0"
+
+
     #TODO install cudnn

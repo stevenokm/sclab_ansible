@@ -1,9 +1,12 @@
 ---
 - hosts: sclab
   remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
   tasks:
     - name: list nvidia GPU
-      shell: /usr/bin/nvidia-smi
+      shell: fuser -v /dev/nvidia* 2>&1
       register: gpu_list
 
     - debug:
