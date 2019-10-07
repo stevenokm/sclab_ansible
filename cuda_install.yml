@@ -39,6 +39,12 @@
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
+    - name: install CUDA 9.2
+      apt:
+        pkg: cuda-9-2
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
     - name: install CUDA 9.0
       apt:
         pkg: cuda-9-0
@@ -50,6 +56,16 @@
         dest: "/etc/profile.d/cuda-default.sh"
         content: |
           export CUDA_VISIBLE_DEVICES="0"
+          export CUDA_DEVICE_ORDER=PCI_BUS_ID
 
+    - name: install environment modules
+      apt:
+        pkg: environment-modules
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
-    #TODO install cudnn
+      #    - name: setup environment modules for cuda
+      #      copy:
+      #        src: "cuda"
+      #        dest: "/usr/share/modules/modulefiles/"
+

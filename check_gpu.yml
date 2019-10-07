@@ -1,12 +1,13 @@
 ---
 - hosts: sclab
   remote_user: stevenokm
-  become: yes
-  become_user: root
-  become_method: sudo
+  #become: yes
+  #become_user: root
+  #become_method: sudo
   tasks:
     - name: list nvidia GPU
-      shell: fuser -v /dev/nvidia* 2>&1
+      #shell: fuser -v /dev/nvidia* 2>&1
+      shell: nvidia-smi --query-compute-apps=pid --format=csv | tail -n +2 | awk '{system("ps -o pid=,tty=,cmd= -p" $1)}' | awk '{system("who | grep " $2); print $0}'
       register: gpu_list
 
     - debug:

@@ -15,18 +15,82 @@
         pkg: python3-pip
         state: present
         update_cache: yes
-    - name: install latest glances in python3
-      pip:
-        name: glances
-        executable: pip3
-    - name: install latest nvidia-ml-py3 in python3
-      pip:
-        name: nvidia-ml-py3
-        executable: pip3
+    - name: check installed packages
+      package_facts:
+        manager: auto
+    - name: glances part
+      block:
+      - name: install latest glances in python3
+        pip:
+          name: glances
+          state: latest
+          executable: pip3
+      - name: install latest nvidia-ml-py3 in python3
+        pip:
+          name: nvidia-ml-py3
+          state: latest
+          executable: pip3
+      - name: install latest netifaces in python3
+        pip:
+          name: netifaces
+          state: latest
+          executable: pip3
+      - name: install latest py-cpuinfo in python3
+        pip:
+          name: py-cpuinfo
+          state: latest
+          executable: pip3
+      - name: install latest pySMART.smartx in python3
+        pip:
+          name: pySMART.smartx
+          state: latest
+          executable: pip3
+      - name: install latest docker-py in python3
+        pip:
+          name: docker
+          state: latest
+          executable: pip3
+        when: ansible_facts.packages['docker-ce'] is defined
+      - name: install hddtemp
+        apt:
+          pkg: hddtemp
+          state: present
+          update_cache: yes
+      - name: setup config file for glances
+        copy:
+          src: "glances.conf"
+          dest: "/etc/glances/"
     - name: install latest kaggle in python3
       pip:
         name: kaggle
+        executable: pip3
     - name: install 2.0.2 matplotlib in python3
       pip:
         name: matplotlib==2.0.2
         executable: pip3
+    - name: ubuntu 16.04
+      block:
+        - name: import python3.6 repo
+          apt_repository:
+            repo: ppa:deadsnakes/ppa
+        - name: install python3.6
+          apt:
+            pkg: python3.6
+            state: present
+            update_cache: yes
+        - name: install pip3.6
+          copy:
+            dest: "/etc/profile.d/python36.sh"
+            content: |
+              alias "pip3.6"="python3.6 -m pip $1"
+        - name: install pytorch 1.2.0
+          pip:
+            name: torch==1.2.0
+            executable: /usr/bin/python3.6 -m pip
+            extra_args: -f https://download.pytorch.org/whl/torch_stable.html
+        - name: install torchvision 0.4.0
+          pip:
+            name: torchvision==0.4.0
+            executable: /usr/bin/python3.6 -m pip
+            extra_args: -f https://download.pytorch.org/whl/torch_stable.html
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "16.04"
