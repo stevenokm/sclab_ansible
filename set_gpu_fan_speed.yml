@@ -5,7 +5,7 @@
   become_user: root
   become_method: sudo
   vars:
-    fan_speed: 73
+    fan_speed: 70
   tasks:
     - name: create setting script
       copy:
