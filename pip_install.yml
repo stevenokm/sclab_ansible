@@ -68,6 +68,11 @@
       pip:
         name: matplotlib==2.0.2
         executable: pip3
+    - name: install jupyter in python3
+      pip:
+        name: jupyter
+        executable: pip3
+        state: forcereinstall
     - name: ubuntu 16.04
       block:
         - name: import python3.6 repo
@@ -80,17 +85,19 @@
             update_cache: yes
         - name: install pip3.6
           copy:
-            dest: "/etc/profile.d/python36.sh"
-            content: |
-              alias "pip3.6"="python3.6 -m pip $1"
+            src: "pip3.6"
+            dest: "/usr/local/bin/pip3.6"
+            owner: root
+            group: root
+            mode: '0755'
         - name: install pytorch 1.2.0
           pip:
             name: torch==1.2.0
-            executable: /usr/bin/python3.6 -m pip
-            extra_args: -f https://download.pytorch.org/whl/torch_stable.html
+            executable: pip3.6
+            extra_args: -f https://download.pytorch.org/whl/cu100/torch_stable.html
         - name: install torchvision 0.4.0
           pip:
             name: torchvision==0.4.0
-            executable: /usr/bin/python3.6 -m pip
-            extra_args: -f https://download.pytorch.org/whl/torch_stable.html
+            executable: pip3.6
+            extra_args: -f https://download.pytorch.org/whl/cu100/torch_stable.html
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "16.04"
