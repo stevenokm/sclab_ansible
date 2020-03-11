@@ -8,15 +8,15 @@
     - name: download CUDA repo
       get_url:
       args:
-        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_10.0.130-1_amd64.deb
-        dest: /tmp/cuda-repo-ubuntu1604_10.0.130-1_amd64.deb
-        checksum: "md5:13ca2678965c6a013aab82d5628365de"
+        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_10.1.243-1_amd64.deb
+        dest: /tmp/cuda-repo-ubuntu1604_10.1.243-1_amd64.deb
+        checksum: "sha256:df3d387cfd1675c230a9364dfdddb478ff79cd693d19bf909c420c0ee89f8145"
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install CUDA repo
       apt:
       args:
-        deb: /tmp/cuda-repo-ubuntu1604_10.0.130-1_amd64.deb
+        deb: /tmp/cuda-repo-ubuntu1604_10.1.243-1_amd64.deb
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: setup CUDA repo
@@ -33,6 +33,12 @@
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
+    - name: install CUDA 10.1
+      apt:
+        pkg: cuda-10-1
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
     - name: install CUDA 10.0
       apt:
         pkg: cuda-10-0
@@ -45,15 +51,15 @@
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
-    - name: install CUDA 9.2
-      apt:
-        pkg: cuda-9-2
-        state: present
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
-
     - name: install CUDA 9.0
       apt:
         pkg: cuda-9-0
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: install CUDA 9.2
+      apt:
+        pkg: cuda-9-2
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 

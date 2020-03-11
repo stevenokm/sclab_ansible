@@ -5,74 +5,6 @@
   become_user: root
   become_method: sudo
   tasks:
-    - name: install python3
-      apt:
-        pkg: python3
-        state: present
-        update_cache: yes
-    - name: install python3-pip
-      apt:
-        pkg: python3-pip
-        state: present
-        update_cache: yes
-    - name: check installed packages
-      package_facts:
-        manager: auto
-    - name: glances part
-      block:
-      - name: install latest glances in python3
-        pip:
-          name: glances
-          state: latest
-          executable: pip3
-      - name: install latest nvidia-ml-py3 in python3
-        pip:
-          name: nvidia-ml-py3
-          state: latest
-          executable: pip3
-      - name: install latest netifaces in python3
-        pip:
-          name: netifaces
-          state: latest
-          executable: pip3
-      - name: install latest py-cpuinfo in python3
-        pip:
-          name: py-cpuinfo
-          state: latest
-          executable: pip3
-      - name: install latest pySMART.smartx in python3
-        pip:
-          name: pySMART.smartx
-          state: latest
-          executable: pip3
-      - name: install latest docker-py in python3
-        pip:
-          name: docker
-          state: latest
-          executable: pip3
-        when: ansible_facts.packages['docker-ce'] is defined
-      - name: install hddtemp
-        apt:
-          pkg: hddtemp
-          state: present
-          update_cache: yes
-      - name: setup config file for glances
-        copy:
-          src: "glances.conf"
-          dest: "/etc/glances/"
-    - name: install latest kaggle in python3
-      pip:
-        name: kaggle
-        executable: pip3
-    - name: install 2.0.2 matplotlib in python3
-      pip:
-        name: matplotlib==2.0.2
-        executable: pip3
-    - name: install jupyter in python3
-      pip:
-        name: jupyter
-        executable: pip3
-        state: forcereinstall
     - name: ubuntu 16.04
       block:
         - name: import python3.6 repo
@@ -83,13 +15,15 @@
             pkg: python3.6
             state: present
             update_cache: yes
-        - name: install pip3.6
-          copy:
-            src: "pip3.6"
-            dest: "/usr/local/bin/pip3.6"
-            owner: root
-            group: root
-            mode: '0755'
+            #        - name: install pip3.6
+            #          copy:
+            #            src: "pip3.6"
+            #            dest: "/usr/local/bin/pip3.6"
+            #            owner: root
+            #            group: root
+            #            mode: '0755'
+        - name: install latest pip3.6
+          shell: python3.6 -m pip install pip --upgrade --force
         - name: install pytorch 1.2.0
           pip:
             name: torch==1.2.0
@@ -100,4 +34,100 @@
             name: torchvision==0.4.0
             executable: pip3.6
             extra_args: -f https://download.pytorch.org/whl/cu100/torch_stable.html
+        - name: set python 3.6 jupyter notebook ip setting script
+          copy:
+            dest: "/etc/profile.d/jupyter36.sh"
+            content: |
+              alias jupyter-notebook3.6='echo -e "\nNOTE: change \033[1;33m`hostname -i`\033[0m to \033[1;33m`curl -s ip.42.pl/raw`\033[0m\n";python3.6 -m notebook --ip `hostname -i` --no-browser'
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "16.04"
+    - name: python3
+      block:
+      - name: install python3
+        apt:
+          pkg: python3
+          state: present
+          update_cache: yes
+      - name: install python3-pip
+        apt:
+          pkg: python3-pip
+          state: present
+          update_cache: yes
+      - name: upgrade latest pip3
+        shell: python3 -m pip install pip --upgrade --force
+      - name: check installed packages
+        package_facts:
+          manager: auto
+      - name: glances part
+        block:
+        - name: install latest glances in python3
+          pip:
+            name: glances
+            state: latest
+            executable: pip3
+        - name: install latest nvidia-ml-py3 in python3
+          pip:
+            name: nvidia-ml-py3
+            state: latest
+            executable: pip3
+        - name: install latest netifaces in python3
+          pip:
+            name: netifaces
+            state: latest
+            executable: pip3
+        - name: install latest py-cpuinfo in python3
+          pip:
+            name: py-cpuinfo
+            state: latest
+            executable: pip3
+        - name: install latest pySMART.smartx in python3
+          pip:
+            name: pySMART.smartx
+            state: latest
+            executable: pip3
+        - name: install latest docker-py in python3
+          pip:
+            name: docker
+            state: latest
+            executable: pip3
+          when: ansible_facts.packages['docker-ce'] is defined
+        - name: install hddtemp
+          apt:
+            pkg: hddtemp
+            state: present
+            update_cache: yes
+        - name: setup config file for glances
+          copy:
+            src: "glances.conf"
+            dest: "/etc/glances/"
+      - name: install latest kaggle in python3
+        pip:
+          name: kaggle
+          executable: pip3
+      - name: install 2.0.2 matplotlib in python3
+        pip:
+          name: matplotlib==2.0.2
+          executable: pip3
+      - name: install jupyter in python3
+        pip:
+          name: jupyter
+          executable: pip3
+          state: forcereinstall
+      - name: set jupyter notebook ip setting script
+        copy:
+          dest: "/etc/profile.d/00-jupyter-alias.sh"
+          content: |
+            alias jupyter-notebook='echo -e "\nNOTE: change \033[1;33m`hostname -i`\033[0m to \033[1;33m`curl -s ip.42.pl/raw`\033[0m\n";jupyter-notebook --ip `hostname -i` --no-browser'
+    - name: python2
+      block:
+      - name: install python
+        apt:
+          pkg: python
+          state: present
+          update_cache: yes
+      - name: install python-pip
+        apt:
+          pkg: python-pip
+          state: present
+          update_cache: yes
+      - name: upgrade latest pip2
+        shell: python -m pip install pip --upgrade --force
