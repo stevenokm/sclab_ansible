@@ -1,0 +1,14 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: update apt
+      apt: update_cache=yes
+
+    - name: install tree
+      apt:
+        pkg: tree
+        state: present
