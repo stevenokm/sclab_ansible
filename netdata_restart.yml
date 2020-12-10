@@ -1,0 +1,12 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: restart netdata
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: netdata

@@ -8,15 +8,15 @@
     - name: download CUDA repo
       get_url:
       args:
-        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_10.1.243-1_amd64.deb
-        dest: /tmp/cuda-repo-ubuntu1604_10.1.243-1_amd64.deb
-        checksum: "sha256:df3d387cfd1675c230a9364dfdddb478ff79cd693d19bf909c420c0ee89f8145"
+        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_10.2.89-1_amd64.deb
+        dest: /tmp/cuda-repo-ubuntu1604_10.2.89-1_amd64.deb
+        checksum: "sha256:1e2091d7b67b1cbd001e28ebc07064f8c12bcc87ab0368c8beffca13500913bf"
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install CUDA repo
       apt:
       args:
-        deb: /tmp/cuda-repo-ubuntu1604_10.1.243-1_amd64.deb
+        deb: /tmp/cuda-repo-ubuntu1604_10.2.89-1_amd64.deb
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: setup CUDA repo
@@ -27,11 +27,22 @@
     - name: update apt
       apt: update_cache=yes
 
+    - name: unhold CUDA driver to upgrade
+      shell:
+        cmd: apt-mark unhold cuda-drivers nvidia-modprobe nvidia-settings
+
     - name: install CUDA driver
       apt:
-        pkg: nvidia-modprobe=410.129-0ubuntu1 nvidia-settings=410.129-0ubuntu1 cuda-drivers=410.129-1
+        pkg:
+        - cuda-drivers=440.118.02-1
+        - nvidia-modprobe=440.118.02-0ubuntu1
+        - nvidia-settings=440.118.02-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: prevent CUDA driver to upgrade
+      shell:
+        cmd: apt-mark hold cuda-drivers nvidia-modprobe nvidia-settings
 
     - name: install CUDA 10.1
       apt:
@@ -60,6 +71,12 @@
     - name: install CUDA 9.2
       apt:
         pkg: cuda-9-2
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: install CUDA 10.2
+      apt:
+        pkg: cuda-10-2
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
