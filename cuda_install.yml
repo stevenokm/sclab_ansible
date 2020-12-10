@@ -49,9 +49,8 @@
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install hotfix nvidia-settings
-      apt:
-      args:
-        deb: /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+      shell:
+        cmd: dpkg -i /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: prevent CUDA driver to upgrade
