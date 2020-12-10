@@ -93,8 +93,8 @@
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
-      #    - name: setup environment modules for cuda
-      #      copy:
-      #        src: "cuda"
-      #        dest: "/usr/share/modules/modulefiles/"
+    - name: setup environment modules for cuda
+      copy:
+        src: "cuda"
+        dest: "/usr/share/modules/modulefiles/"
 
