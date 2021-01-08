@@ -5,24 +5,49 @@
   become_user: root
   become_method: sudo
   tasks:
-    - name: download CUDA repo
-      get_url:
-      args:
-        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_10.2.89-1_amd64.deb
-        dest: /tmp/cuda-repo-ubuntu1604_10.2.89-1_amd64.deb
-        checksum: "sha256:1e2091d7b67b1cbd001e28ebc07064f8c12bcc87ab0368c8beffca13500913bf"
+    - name: ubuntu 16.04
+      block:
+        - name: download CUDA repo pin
+          get_url:
+          args:
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-ubuntu1604.pin
+            dest: /tmp/cuda-ubuntu1604.pin
+
+        - name: install CUDA repo pin
+          command: mv /tmp/cuda-ubuntu1604.pin /etc/apt/preferences.d/cuda-repository-pin-600
+
+        - name: setup CUDA repo key
+          apt_key:
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+
+        - name: setup CUDA repo
+          apt_repository:
+            repo: deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /
+            state: present
+            filename: cuda
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
-    - name: install CUDA repo
-      apt:
-      args:
-        deb: /tmp/cuda-repo-ubuntu1604_10.2.89-1_amd64.deb
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+    - name: ubuntu 18.04
+      block:
+        - name: download CUDA repo pin
+          get_url:
+          args:
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
+            dest: /tmp/cuda-ubuntu1804.pin
 
-    - name: setup CUDA repo
-      apt_key:
-        url: http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+        - name: install CUDA repo pin
+          command: mv /tmp/cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
+
+        - name: setup CUDA repo key
+          apt_key:
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+
+        - name: setup CUDA repo
+          apt_repository:
+            repo: deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /
+            state: present
+            filename: cuda
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
     - name: update apt
       apt: update_cache=yes
@@ -31,7 +56,7 @@
       shell:
         cmd: apt-mark unhold cuda-drivers nvidia-modprobe nvidia-settings
 
-    - name: install CUDA driver
+    - name: install CUDA driver 16.04
       apt:
         pkg:
         - cuda-drivers=440.118.02-1
@@ -39,6 +64,15 @@
         - nvidia-settings=440.118.02-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    - name: install CUDA driver 18.04
+      apt:
+        pkg:
+        - cuda-drivers=460.27.04-1
+        - nvidia-modprobe=460.27.04-0ubuntu1
+        - nvidia-settings=460.27.04-0ubuntu1
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
     - name: hotfix nvidia-settings https://forums.developer.nvidia.com/t/109256
       get_url:
@@ -61,13 +95,11 @@
       apt:
         pkg: cuda-10-1
         state: present
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install CUDA 10.0
       apt:
         pkg: cuda-10-0
         state: present
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install CUDA 8.0
       apt:
@@ -91,7 +123,6 @@
       apt:
         pkg: cuda-10-2
         state: present
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: set default cuda device setting script
       copy:
@@ -100,11 +131,15 @@
           export CUDA_VISIBLE_DEVICES="0"
           export CUDA_DEVICE_ORDER=PCI_BUS_ID
 
+    - name: install tcl
+      apt:
+        pkg: tcl
+        state: present
+
     - name: install environment modules
       apt:
         pkg: environment-modules
         state: present
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: setup environment modules for cuda
       copy:
