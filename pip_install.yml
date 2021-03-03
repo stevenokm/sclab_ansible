@@ -94,7 +94,9 @@
             executable: pip3
         - name: install llvm-8
           apt:
-            pkg: llvm-8 libllvm8
+            pkg:
+            - llvm-8
+            - libllvm8
             state: present
             update_cache: yes
         - name: install latest llvmlite in python3

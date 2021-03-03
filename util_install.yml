@@ -12,3 +12,12 @@
       apt:
         pkg: tree
         state: present
+
+    - name: install git-lfs
+      block:
+        - name: install git-lfs repo
+          shell: curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+        - name: install git-lfs
+          apt:
+            pkg: git-lfs
+            state: present
