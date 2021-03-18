@@ -5,18 +5,36 @@
   become_user: root
   become_method: sudo
   tasks:
-    - name: ubuntu 16.04
+    - name: python3.6
       block:
-        - name: import python3.6 repo
-          apt_repository:
-            repo: ppa:deadsnakes/ppa
-        - name: install python3.6
-          apt:
-            pkg:
-            - python3.6
-            - python3.6-dev
-            state: present
-            update_cache: yes
+        - name: ubuntu 16.04
+          block:
+          - name: import python3.6 repo
+            apt_repository:
+              repo: ppa:deadsnakes/ppa
+          - name: install python3.6
+            apt:
+              pkg:
+              - python3.6
+              - python3.6-dev
+              state: present
+              update_cache: yes
+          when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "16.04"
+        - name: ubuntu 18.04
+          block:
+          - name: install python3
+            apt:
+              pkg:
+              - python3
+              - python3-dev
+              state: present
+              update_cache: yes
+          - name: install python3-pip
+            apt:
+              pkg: python3-pip
+              state: present
+              update_cache: yes
+          when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "18.04"
         - name: install libpython3.6
           apt:
             pkg:
@@ -24,13 +42,6 @@
             - libpython3.6-dev
             state: present
             update_cache: yes
-            #        - name: install pip3.6
-            #          copy:
-            #            src: "pip3.6"
-            #            dest: "/usr/local/bin/pip3.6"
-            #            owner: root
-            #            group: root
-            #            mode: '0755'
         - name: install latest pip3.6
           shell: python3.6 -m pip install pip --upgrade --force
         - name: install pytorch 1.7.1
@@ -43,38 +54,43 @@
             name: torchvision==0.8.2
             executable: pip3.6
             extra_args: -f https://download.pytorch.org/whl/cu102/torch_stable.html
+        - name: install tensorflow 2.3.2
+          pip:
+            name:
+            - tensorflow==2.3.2
+            - tensorflow-text==2.3.0
+            executable: pip3.6
         - name: set python 3.6 jupyter notebook ip setting script
           copy:
             dest: "/etc/profile.d/jupyter36.sh"
             content: |
               alias jupyter-notebook3.6='echo -e "\nNOTE: change \033[1;33m{{ ansible_default_ipv4.address }}\033[0m to \033[1;33m{{ ansible_host }}\033[0m\n";python3.6 -m notebook --ip {{ ansible_default_ipv4.address }} --no-browser'
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "16.04"
-    - name: python3.5
+    - name: python3
       block:
-      - name: install python3.5
-        apt:
-          pkg:
-          - python3.5
-          - python3.5-dev
-          state: present
-          update_cache: yes
-      - name: install libpython3.5
-        apt:
-          pkg:
-          - libpython3.5
-          - libpython3.5-dev
-          state: present
-          update_cache: yes
-      - name: install python3-pip
-        apt:
-          pkg: python3-pip
-          state: present
-          update_cache: yes
-      - name: upgrade latest pip3
-        shell: python3 -m pip install pip --upgrade --force
-      - name: check installed packages
-        package_facts:
-          manager: auto
+      - name: python3.5
+        block:
+        - name: install python3
+          apt:
+            pkg:
+            - python3
+            - python3-dev
+            state: present
+            update_cache: yes
+        - name: install libpython3.5
+          apt:
+            pkg:
+            - libpython3.5
+            - libpython3.5-dev
+            state: present
+            update_cache: yes
+        - name: install python3-pip
+          apt:
+            pkg: python3-pip
+            state: present
+            update_cache: yes
+        - name: upgrade latest pip3
+          shell: python3 -m pip install pip --upgrade --force
+        when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "16.04"
       - name: glances part
         block:
         - name: install latest glances in python3
@@ -159,8 +175,8 @@
       - name: install python
         apt:
           pkg:
-          - python2.7
-          - python2.7-dev
+          - python
+          - python-dev
           state: present
           update_cache: yes
       - name: install libpython
