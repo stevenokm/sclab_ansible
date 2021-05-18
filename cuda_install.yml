@@ -64,9 +64,9 @@
     - name: install CUDA driver 16.04
       apt:
         pkg:
-        - cuda-drivers=440.118.02-1
-        - nvidia-modprobe=440.118.02-0ubuntu1
-        - nvidia-settings=440.118.02-0ubuntu1
+        - cuda-drivers=460.73.01-1
+        - nvidia-modprobe=460.73.01-0ubuntu1
+        - nvidia-settings=460.73.01-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
@@ -79,18 +79,18 @@
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
-    - name: hotfix nvidia-settings https://forums.developer.nvidia.com/t/109256
-      get_url:
-      args:
-        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
-        dest: /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
-        checksum: "sha256:61a6b7e3d9884f1f5e025e7e0172ea024dbdc099dff7894181c900327a029eef"
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
-
-    - name: install hotfix nvidia-settings
-      shell:
-        cmd: dpkg -i /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      #    - name: hotfix nvidia-settings https://forums.developer.nvidia.com/t/109256
+      #      get_url:
+      #      args:
+      #        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+      #        dest: /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+      #        checksum: "sha256:61a6b7e3d9884f1f5e025e7e0172ea024dbdc099dff7894181c900327a029eef"
+      #      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      #
+      #    - name: install hotfix nvidia-settings
+      #      shell:
+      #        cmd: dpkg -i /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+      #      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: prevent CUDA driver to upgrade
       shell:
