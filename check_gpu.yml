@@ -6,9 +6,14 @@
   #become_method: sudo
   tasks:
     - name: list nvidia GPU
-      #shell: fuser -v /dev/nvidia* 2>&1
-      shell: nvidia-smi --query-compute-apps=pid --format=csv | tail -n +2 | awk '{system("ps -o pid=,tty=,user=,start=,cmd= -p" $1)}' | awk '{system("who | grep " $2); print $0}'
+      shell: nvidia-smi --query-gpu=utilization.gpu,utilization.memory --format=csv,noheader
+      register: gpu_util
+
+    - name: list nvidia GPU
+      shell: nvidia-smi --query-compute-apps=pid --format=csv,noheader | awk '{system("ps -o pid=,tty=,user=,start=,cmd= -p" $1)}' | awk '{system("who | grep " $2); print $0}'
       register: gpu_list
 
     - debug:
-        msg: "{{ gpu_list.stdout_lines }}"
+        msg:
+        - "{{ gpu_util.stdout_lines }}"
+        - "{{ gpu_list.stdout_lines }}"
