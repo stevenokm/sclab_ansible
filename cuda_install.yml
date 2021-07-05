@@ -73,9 +73,9 @@
     - name: install CUDA driver 18.04
       apt:
         pkg:
-        - cuda-drivers=460.73.01-1
-        - nvidia-modprobe=460.73.01-0ubuntu1
-        - nvidia-settings=460.73.01-0ubuntu1
+        - cuda-drivers=470.42.01-1
+        - nvidia-modprobe=470.42.01-0ubuntu1
+        - nvidia-settings=470.42.01-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
