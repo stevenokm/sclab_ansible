@@ -67,6 +67,7 @@
         - cuda-drivers=465.19.01-1
         - nvidia-modprobe=465.19.01-0ubuntu1
         - nvidia-settings=465.19.01-0ubuntu1
+        - libxnvctrl0=465.19.01-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
@@ -76,6 +77,7 @@
         - cuda-drivers=470.57.02-1
         - nvidia-modprobe=470.57.02-0ubuntu1
         - nvidia-settings=470.57.02-0ubuntu1
+        - libxnvctrl0=470.57.02-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
