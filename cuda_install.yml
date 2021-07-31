@@ -54,7 +54,7 @@
 
     - name: unhold CUDA driver to upgrade
       shell:
-        cmd: apt-mark unhold cuda-drivers cuda-drivers-* nvidia-* libnvidia-*
+        cmd: apt-mark unhold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0
         
     - name: unhold xserver-xorg-video-nvidia to upgrade
       shell:
@@ -73,9 +73,9 @@
     - name: install CUDA driver 18.04
       apt:
         pkg:
-        - cuda-drivers=470.42.01-1
-        - nvidia-modprobe=470.42.01-0ubuntu1
-        - nvidia-settings=470.42.01-0ubuntu1
+        - cuda-drivers=470.57.02-1
+        - nvidia-modprobe=470.57.02-0ubuntu1
+        - nvidia-settings=470.57.02-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
@@ -94,7 +94,7 @@
 
     - name: prevent CUDA driver to upgrade
       shell:
-        cmd: apt-mark hold cuda-drivers cuda-drivers-* nvidia-* libnvidia-*
+        cmd: apt-mark hold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0
         
     - name: prevent xserver-xorg-video-nvidia to upgrade
       shell:
