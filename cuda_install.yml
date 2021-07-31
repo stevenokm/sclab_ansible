@@ -64,9 +64,9 @@
     - name: install CUDA driver 16.04
       apt:
         pkg:
-        - cuda-drivers=460.91.03-1
-        - nvidia-modprobe=460.91.03-0ubuntu1
-        - nvidia-settings=460.91.03-0ubuntu1
+        - cuda-drivers=465.19.01-1
+        - nvidia-modprobe=465.19.01-0ubuntu1
+        - nvidia-settings=465.19.01-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
