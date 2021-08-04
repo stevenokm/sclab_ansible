@@ -9,6 +9,12 @@
       debug:
         msg: "remember to disable iGPU running X11"
 
+    - name: install lightdm-gtk-greeter
+      apt:
+        pkg:
+        - lightdm-gtk-greeter
+        state: present
+
     - name: stop xserver
       service:
         name: lightdm

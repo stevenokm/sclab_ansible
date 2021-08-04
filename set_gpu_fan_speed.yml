@@ -11,7 +11,7 @@
       copy:
         dest: "/usr/share/lightdm/lightdm.conf.d/99-nvfanspeed.conf"
         content: |
-          [SeatDefaults]
+          [Seat:*]
           #display-setup-script=/usr/bin/nvidia-settings {% for id in range(hostvars[inventory_hostname].gpus) %} -a [gpu:{{ id }}]/GPUFanControlState=1 -a [fan:{{ id }}]/GPUTargetFanSpeed={{ fan_speed }} {% endfor %}
           
           display-setup-script=/usr/bin/nvidia-settings {% for id in range(hostvars[inventory_hostname].gpus) %} -a [gpu:{{ id }}]/GPUFanControlState=0 {% endfor %}
