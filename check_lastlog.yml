@@ -1,0 +1,10 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  tasks:
+    - name: list lastlog
+      shell: /usr/bin/lastlog
+      register: lastlog_list
+
+    - debug:
+        msg: "{{ lastlog_list.stdout_lines }}"
