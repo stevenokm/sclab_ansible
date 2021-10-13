@@ -1,5 +1,5 @@
 ---
-- hosts: sclab
+- hosts: sclab-upgrade
   remote_user: stevenokm
   become: yes
   become_user: root

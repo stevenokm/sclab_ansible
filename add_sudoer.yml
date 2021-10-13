@@ -1,0 +1,13 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: add the user 'wangyuwen' to the sudo group
+      ansible.builtin.user:
+        name: wangyuwen
+        groups: sudo
+        append: yes
+

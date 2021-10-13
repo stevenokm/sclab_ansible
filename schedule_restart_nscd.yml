@@ -1,0 +1,15 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: systemctl restart nscd
+        minute: "0"
+        hour: "3"
+        user: root
+        job: "systemctl restart nscd"
+        cron_file: ansible_restart-nscd

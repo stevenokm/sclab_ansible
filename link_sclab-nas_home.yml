@@ -1,0 +1,26 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: set nas home script
+      copy:
+        dest: "/etc/profile.d/link_sclab-nas_home.sh"
+        content: |
+          mount="/sclab-nas_homes"
+          if [ -d "${mount}" ]; then
+            user=`id -u -n`
+            uid=`id -u`
+            nas_home="@LH-SCLAB.CS.NTHU.EDU.TW/61"
+            link_target="${mount}/${nas_home}/${user}-${uid}"
+            link_name="sclab-nas_home"
+            if [ -d "${link_target}" ]; then
+              #echo "found nas link ${link_target}"
+              if [ ! -d "${link_name}" ]; then
+                echo "create nas link ${link_name} from ${link_target}"
+                ln -s "${link_target}" "${link_name}"
+              fi
+            fi
+          fi 
