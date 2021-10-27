@@ -15,7 +15,7 @@
             uid=`id -u`
             nas_home="@LH-SCLAB.CS.NTHU.EDU.TW/61"
             link_target="${mount}/${nas_home}/${user}-${uid}"
-            link_name="sclab-nas_home"
+            link_name="${HOME}/sclab-nas_home"
             if [ -d "${link_target}" ]; then
               #echo "found nas link ${link_target}"
               if [ ! -d "${link_name}" ]; then
