@@ -28,8 +28,14 @@
       with_items:
         - 140.114.0.0/16
 
+    - name: add Nginx HTTP rule
+      ufw:
+        rule: allow
+        name: 'Nginx HTTP'
+
     - name: install fail2ban
       apt:
         pkg: fail2ban
         state: present
         update_cache: yes
+
