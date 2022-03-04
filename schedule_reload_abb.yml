@@ -1,0 +1,17 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: abb-cli -r -q
+        minute: "0"
+        hour: "3"
+        day: "*"
+        month: "*/2"
+        user: root
+        job: "/bin/abb-cli -r -q"
+        cron_file: ansible_abb-cli-reload
