@@ -1,2 +1,4 @@
 tags*
 *.retry
+cudnn_tgz/*
+!cudnn_tgz/README.md

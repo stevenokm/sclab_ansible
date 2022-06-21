@@ -137,12 +137,11 @@
             name: pySMART.smartx
             state: latest
             executable: pip3
-#        - name: install latest docker-py in python3
-#          pip:
-#            name: docker
-#            state: latest
-#            executable: pip3
-#          when: "'docker-ce' in ansible_facts.packages"
+        - name: install docker dependency for glances in python3
+          pip:
+            name: glances[docker]
+            state: latest
+            executable: pip3
         - name: install hddtemp
           apt:
             pkg: hddtemp

@@ -40,7 +40,7 @@
 
         - name: setup CUDA repo key
           apt_key:
-            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
 
         - name: setup CUDA repo
           apt_repository:
@@ -55,7 +55,7 @@
     - name: unhold CUDA driver to upgrade
       shell:
         cmd: apt-mark unhold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0
-        
+
     - name: unhold xserver-xorg-video-nvidia to upgrade
       shell:
         cmd: apt-mark unhold xserver-xorg-video-nvidia-*
@@ -64,40 +64,40 @@
     - name: install CUDA driver 16.04
       apt:
         pkg:
-        - cuda-drivers=465.19.01-1
-        - nvidia-modprobe=465.19.01-0ubuntu1
-        - nvidia-settings=465.19.01-0ubuntu1
-        - libxnvctrl0=465.19.01-0ubuntu1
+          - cuda-drivers=465.19.01-1
+          - nvidia-modprobe=465.19.01-0ubuntu1
+          - nvidia-settings=465.19.01-0ubuntu1
+          - libxnvctrl0=465.19.01-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: install CUDA driver 18.04
       apt:
         pkg:
-        - cuda-drivers=470.57.02-1
-        - nvidia-modprobe=470.57.02-0ubuntu1
-        - nvidia-settings=470.57.02-0ubuntu1
-        - libxnvctrl0=470.57.02-0ubuntu1
+          - cuda-drivers=470.57.02-1
+          - nvidia-modprobe=470.57.02-0ubuntu1
+          - nvidia-settings=470.57.02-0ubuntu1
+          - libxnvctrl0=470.57.02-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
-      #    - name: hotfix nvidia-settings https://forums.developer.nvidia.com/t/109256
-      #      get_url:
-      #      args:
-      #        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
-      #        dest: /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
-      #        checksum: "sha256:61a6b7e3d9884f1f5e025e7e0172ea024dbdc099dff7894181c900327a029eef"
-      #      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
-      #
-      #    - name: install hotfix nvidia-settings
-      #      shell:
-      #        cmd: dpkg -i /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
-      #      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+    # - name: hotfix nvidia-settings https://forums.developer.nvidia.com/t/109256
+    #   get_url:
+    #   args:
+    #     url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+    #     dest: /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+    #     checksum: "sha256:61a6b7e3d9884f1f5e025e7e0172ea024dbdc099dff7894181c900327a029eef"
+    #   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+    # - name: install hotfix nvidia-settings
+    #   shell:
+    #     cmd: dpkg -i /tmp/nvidia-settings_440.118.02-0ubuntu1_amd64.deb
+    #   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
     - name: prevent CUDA driver to upgrade
       shell:
         cmd: apt-mark hold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0
-        
+
     - name: prevent xserver-xorg-video-nvidia to upgrade
       shell:
         cmd: apt-mark hold xserver-xorg-video-nvidia-*
@@ -158,3 +158,106 @@
         src: "cuda"
         dest: "/usr/share/modules/modulefiles/"
 
+    - name: install cuDNN 7.6.5.32 for CUDA 10.2
+      block:
+        - name: copy cuDNN tar
+          copy:
+            src: "cudnn_tgz/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+            dest: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+        - name: mkdir /tmp/cudnn*
+          file:
+            state: directory
+            path: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}"
+        - name: untar cuDNN
+          unarchive:
+            src: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+            dest: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}"
+            remote_src: yes
+        - name: copy cuDNN include files
+          shell: "cp /tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}/cuda/include/cudnn*.h /usr/local/cuda-{{ cuda_version }}/include"
+        - name: set cuDNN include files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/include/cudnn*.h"
+        - name: copy cuDNN lib files
+          shell: "cp -P /tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}/cuda/lib64/libcudnn* /usr/local/cuda-{{ cuda_version }}/lib64"
+        - name: set cuDNN lib files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/lib64/libcudnn*"
+      vars:
+        cudnn_version: "7.6.5.32"
+        cuda_version: "10.2"
+
+    - name: install cuDNN 8.3.2.44 for CUDA 10.2
+      block:
+        - name: copy cuDNN tar
+          copy:
+            src: "cudnn_tgz/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive.tar.xz"
+            dest: "/tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive.tar.xz"
+        - name: untar cuDNN
+          unarchive:
+            src: "/tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive.tar.xz"
+            dest: "/tmp"
+            remote_src: yes
+        - name: copy cuDNN include files
+          shell: "cp /tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive/include/cudnn*.h /usr/local/cuda-{{ cuda_version }}/include"
+        - name: set cuDNN include files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/include/cudnn*.h"
+        - name: copy cuDNN lib files
+          shell: "cp -P /tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive/lib/libcudnn* /usr/local/cuda-{{ cuda_version }}/lib64"
+        - name: set cuDNN lib files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/lib64/libcudnn*"
+      vars:
+        cudnn_version: "8.3.2.44"
+        cuda_version: "10.2"
+
+    - name: install cuDNN 7.6.5.32 for CUDA 10.1
+      block:
+        - name: copy cuDNN tar
+          copy:
+            src: "cudnn_tgz/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+            dest: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+        - name: mkdir /tmp/cudnn*
+          file:
+            state: directory
+            path: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}"
+        - name: untar cuDNN
+          unarchive:
+            src: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+            dest: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}"
+            remote_src: yes
+        - name: copy cuDNN include files
+          shell: "cp /tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}/cuda/include/cudnn*.h /usr/local/cuda-{{ cuda_version }}/include"
+        - name: set cuDNN include files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/include/cudnn*.h"
+        - name: copy cuDNN lib files
+          shell: "cp -P /tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}/cuda/lib64/libcudnn* /usr/local/cuda-{{ cuda_version }}/lib64"
+        - name: set cuDNN lib files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/lib64/libcudnn*"
+      vars:
+        cudnn_version: "7.6.5.32"
+        cuda_version: "10.1"
+
+    - name: install cuDNN 7.6.5.32 for CUDA 10.0
+      block:
+        - name: copy cuDNN tar
+          copy:
+            src: "cudnn_tgz/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+            dest: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+        - name: mkdir /tmp/cudnn*
+          file:
+            state: directory
+            path: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}"
+        - name: untar cuDNN
+          unarchive:
+            src: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}.tgz"
+            dest: "/tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}"
+            remote_src: yes
+        - name: copy cuDNN include files
+          shell: "cp /tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}/cuda/include/cudnn*.h /usr/local/cuda-{{ cuda_version }}/include"
+        - name: set cuDNN include files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/include/cudnn*.h"
+        - name: copy cuDNN lib files
+          shell: "cp -P /tmp/cudnn-{{ cuda_version }}-linux-x64-v{{ cudnn_version }}/cuda/lib64/libcudnn* /usr/local/cuda-{{ cuda_version }}/lib64"
+        - name: set cuDNN lib files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/lib64/libcudnn*"
+      vars:
+        cudnn_version: "7.6.5.32"
+        cuda_version: "10.0"
