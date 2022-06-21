@@ -40,7 +40,7 @@
 
         - name: setup CUDA repo key
           apt_key:
-            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
         - name: setup CUDA repo
           apt_repository:
