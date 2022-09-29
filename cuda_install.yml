@@ -29,24 +29,23 @@
 
     - name: ubuntu 18.04
       block:
-        - name: download CUDA repo pin
-          get_url:
-          args:
-            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
-            dest: /tmp/cuda-ubuntu1804.pin
+        - name: remove old GPG key
+          command: apt-key del 7fa2af80
 
-        - name: install CUDA repo pin
-          command: mv /tmp/cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-
-        - name: setup CUDA repo key
-          apt_key:
-            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
-
-        - name: setup CUDA repo
+        - name: remove old cuda repo
           apt_repository:
             repo: deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /
-            state: present
+            state: absent
             filename: cuda
+
+        - name: download CUDA repo & key
+          get_url:
+          args:
+            url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb
+            dest: /tmp/cuda-keyring_1.0-1_all.deb
+
+        - name: install CUDA repo
+          command: dpkg -i /tmp/cuda-keyring_1.0-1_all.deb
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
     - name: update apt
@@ -74,10 +73,10 @@
     - name: install CUDA driver 18.04
       apt:
         pkg:
-          - cuda-drivers=470.57.02-1
-          - nvidia-modprobe=470.57.02-0ubuntu1
-          - nvidia-settings=470.57.02-0ubuntu1
-          - libxnvctrl0=470.57.02-0ubuntu1
+          - cuda-drivers=470.141.03-1
+          - nvidia-modprobe=470.141.03-0ubuntu1
+          - nvidia-settings=470.141.03-0ubuntu1
+          - libxnvctrl0=470.141.03-0ubuntu1
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 

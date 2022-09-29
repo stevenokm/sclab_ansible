@@ -1,14 +1,10 @@
 ---
 - hosts: sclab
-  remote_user: stevenokm
+  remote_user: sclab
   become: yes
   become_user: root
   become_method: sudo
   tasks:
-    - name: stop openvpn
-      service:
-        name: openvpn
-        state: stopped
     - name: restart openvpn
       service:
         name: openvpn
