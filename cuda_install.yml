@@ -135,13 +135,6 @@
         pkg: cuda-10-2
         state: present
 
-    - name: set default cuda device setting script
-      copy:
-        dest: "/etc/profile.d/cuda-default.sh"
-        content: |
-          export CUDA_VISIBLE_DEVICES="0"
-          export CUDA_DEVICE_ORDER=PCI_BUS_ID
-
     - name: install tcl
       apt:
         pkg: tcl
@@ -156,6 +149,14 @@
       copy:
         src: "cuda"
         dest: "/usr/share/modules/modulefiles/"
+
+    - name: set default cuda device setting script
+      copy:
+        dest: "/etc/profile.d/Z99-cuda-default.sh"
+        content: |
+          export CUDA_VISIBLE_DEVICES="0"
+          export CUDA_DEVICE_ORDER=PCI_BUS_ID
+          module load cuda
 
     - name: install cuDNN 7.6.5.32 for CUDA 10.2
       block:
