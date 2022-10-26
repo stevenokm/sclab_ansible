@@ -102,6 +102,11 @@
         cmd: apt-mark hold xserver-xorg-video-nvidia-*
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
+    - name: install CUDA 10.2
+      apt:
+        pkg: cuda-10-2
+        state: present
+
     - name: install CUDA 10.1
       apt:
         pkg: cuda-10-1
@@ -130,9 +135,9 @@
         state: present
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
 
-    - name: install CUDA 10.2
+    - name: install CUDA 11.3
       apt:
-        pkg: cuda-10-2
+        pkg: cuda-11-3
         state: present
 
     - name: install tcl
@@ -157,6 +162,34 @@
           export CUDA_VISIBLE_DEVICES="0"
           export CUDA_DEVICE_ORDER=PCI_BUS_ID
           module load cuda
+
+    - name: set motd
+      copy:
+        src: "motd"
+        dest: "/etc/motd"
+
+    - name: install cuDNN 8.5.0.96 for CUDA 11.3
+      block:
+        - name: copy cuDNN tar
+          copy:
+            src: "cudnn_tgz/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive.tar.xz"
+            dest: "/tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive.tar.xz"
+        - name: untar cuDNN
+          unarchive:
+            src: "/tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive.tar.xz"
+            dest: "/tmp"
+            remote_src: yes
+        - name: copy cuDNN include files
+          shell: "cp /tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive/include/cudnn*.h /usr/local/cuda-{{ cuda_version }}/include"
+        - name: set cuDNN include files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/include/cudnn*.h"
+        - name: copy cuDNN lib files
+          shell: "cp -P /tmp/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_version }}-archive/lib/libcudnn* /usr/local/cuda-{{ cuda_version }}/lib64"
+        - name: set cuDNN lib files permission
+          shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/lib64/libcudnn*"
+      vars:
+        cudnn_version: "8.5.0.96"
+        cuda_version: "11"
 
     - name: install cuDNN 7.6.5.32 for CUDA 10.2
       block:
@@ -185,7 +218,7 @@
         cudnn_version: "7.6.5.32"
         cuda_version: "10.2"
 
-    - name: install cuDNN 8.3.2.44 for CUDA 10.2
+    - name: install cuDNN 8.5.0.96 for CUDA 10.2
       block:
         - name: copy cuDNN tar
           copy:
@@ -205,8 +238,8 @@
         - name: set cuDNN lib files permission
           shell: "chmod a+r /usr/local/cuda-{{ cuda_version }}/lib64/libcudnn*"
       vars:
-        cudnn_version: "8.3.2.44"
-        cuda_version: "10.2"
+        cudnn_version: "8.5.0.96"
+        cuda_version: "10"
 
     - name: install cuDNN 7.6.5.32 for CUDA 10.1
       block:

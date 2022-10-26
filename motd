@@ -1,13 +1,14 @@
-| cuda & cudnn version	| module name           |
-|-----------------------|-----------------------|
-| cuda-8.0 w/ cudnn-6	| cuda/cuda-8.0         |
-| cuda-8.0 w/ cudnn-5	| cuda/cuda-8.0-cudnn-5 |
-| cuda-9.0 w/ cudnn-6	| cuda/cuda-9.0	     	        |
-| cuda-9.0 w/ cudnn-7	| cuda/cuda-9.0-cudnn-7 |
-| cuda-9.2 w/ cudnn-7	| cuda/cuda-9.2	     	|
-| cuda-10.0		| cuda	                |
-| cuda-10.1		| cuda/cuda-10.1	|
-| cuda-10.2		| cuda/cuda-10.2	|
+| cuda & cudnn version | module name           |
+| -------------------- | --------------------- |
+| cuda-8.0 w/ cudnn-6  | cuda/cuda-8.0         |
+| cuda-8.0 w/ cudnn-5  | cuda/cuda-8.0-cudnn-5 |
+| cuda-9.0 w/ cudnn-6  | cuda/cuda-9.0         |
+| cuda-9.0 w/ cudnn-7  | cuda/cuda-9.0-cudnn-7 |
+| cuda-9.2 w/ cudnn-7  | cuda/cuda-9.2         |
+| cuda-10.0            | cuda/cuda-10.0        |
+| cuda-10.1            | cuda/cuda-10.1        |
+| cuda-10.2            | cuda/cuda-10.2        |
+| cuda-11.3            | cuda/cuda-11.3        |
 
 using `module load MODULENAME` to load CUDA
 e.g. `module load cuda/cuda-10.0`
