@@ -102,6 +102,9 @@
         cmd: apt-mark hold xserver-xorg-video-nvidia-*
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
 
+    # TODO: install nvidia-docker
+    # ref: https://github.com/NVIDIA/ansible-role-nvidia-docker  
+
     - name: install CUDA 10.2
       apt:
         pkg: cuda-10-2
