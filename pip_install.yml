@@ -24,7 +24,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.5
-              shell: python3.5 -m ensurepip
+              shell: python3.5 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "18.04"
@@ -40,7 +40,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.5
-              shell: python3.5 -m ensurepip
+              shell: python3.5 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "20.04"
@@ -94,7 +94,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.6
-              shell: python3.6 -m ensurepip
+              shell: python3.6 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "20.04"
@@ -109,7 +109,7 @@
           shell: python3.6 -m pip install pip --upgrade --force
         - name: install pytorch 1.7.1
           pip:
-            name: 
+            name:
               - https://download.pytorch.org/whl/cu102/torch-1.7.1-cp36-cp36m-linux_x86_64.whl
               - https://download.pytorch.org/whl/cu102/torchvision-0.8.2-cp36-cp36m-linux_x86_64.whl
               - torchaudio==0.7.2
@@ -147,7 +147,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.8
-              shell: python3.8 -m ensurepip
+              shell: python3.8 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "18.04"
@@ -180,7 +180,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.8
-              shell: python3.8 -m ensurepip
+              shell: python3.8 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "22.04"
@@ -195,7 +195,7 @@
           shell: python3.8 -m pip install pip --upgrade --force
         - name: install pytorch 1.12.1
           pip:
-            name: 
+            name:
               - torch==1.12.1+cu113
               - torchvision==0.13.1+cu113
               - torchaudio==0.12.1
@@ -252,7 +252,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.10
-              shell: python3.10 -m ensurepip
+              shell: python3.10 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "18.04"
@@ -268,7 +268,7 @@
                 state: present
                 update_cache: yes
             - name: ensurepip on python3.10
-              shell: python3.10 -m ensurepip
+              shell: python3.10 -m ensurepip --altinstall --upgrade
             - name: fix system default pip
               shell: apt install -y --reinstall python3-pip
           when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "20.04"
@@ -300,7 +300,7 @@
           shell: python3.10 -m pip install pip --upgrade --force
         - name: install pytorch 1.12.1
           pip:
-            name: 
+            name:
               - torch==1.12.1+cu113
               - torchvision==0.13.1+cu113
               - torchaudio==0.12.1
@@ -313,7 +313,24 @@
               - tensorflow==2.11.0
               - tensorflow-text==2.11.0
             executable: pip3.10
+            state: "absent"
+          when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "18.04"
+        - name: install tensorflow 2.11.0
+          pip:
+            name:
+              - tensorflow==2.11.0
+              - tensorflow-text==2.11.0
+            executable: pip3.10
             state: "present"
+          when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "20.04"
+        - name: install tensorflow 2.11.0
+          pip:
+            name:
+              - tensorflow==2.11.0
+              - tensorflow-text==2.11.0
+            executable: pip3.10
+            state: "present"
+          when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == "22.04"
         - name: install jupyter in python3.10
           pip:
             name:
