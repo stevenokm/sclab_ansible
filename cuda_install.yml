@@ -53,7 +53,7 @@
 
     - name: unhold CUDA driver to upgrade
       shell:
-        cmd: apt-mark unhold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0 cuda-toolkit-config-common
+        cmd: apt-mark unhold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0
 
     - name: unhold xserver-xorg-video-nvidia to upgrade
       shell:
@@ -95,7 +95,7 @@
 
     - name: prevent CUDA driver to upgrade
       shell:
-        cmd: apt-mark hold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0 cuda-toolkit-config-common
+        cmd: apt-mark hold cuda-drivers cuda-drivers-* nvidia-* libnvidia-* libxnvctrl0
 
     - name: prevent xserver-xorg-video-nvidia to upgrade
       shell:
