@@ -1,0 +1,13 @@
+---
+- hosts: sclab
+  remote_user: stevenokm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: add the user '112062531' to the docker group
+      ansible.builtin.user:
+        name: 112062531
+        groups: docker
+        append: yes
+

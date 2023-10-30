@@ -459,6 +459,11 @@
           copy:
             src: "glances.conf"
             dest: "/etc/glances/"
+        - name: install latest nvitop on python3
+          pip:
+            name: nvitop
+            state: latest
+            executable: pip3
         - name: install latest kaggle on python3
           pip:
             name: kaggle
